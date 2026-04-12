@@ -8,9 +8,6 @@ RUN apt-get update \
         aptitude \
         golang \
         nodejs \
-        qemu-system-x86 \
-        qemu-system-aarch64 \
-        qemu-guest-agent \
         vim \
         curl \
         ca-certificates \
@@ -25,10 +22,8 @@ RUN apt-get update \
         netcat-openbsd \
         git \
         dos2unix \
-        openjdk-25-jdk-headless \
         unzip \
         npm \
-        nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -44,7 +39,7 @@ FROM base AS codex
 RUN npm install -g @openai/codex
 
 FROM base AS crush
-RUN go install github.com/charmbracelet/crush@latest
-RUN mkdir -p /usr/local/bin \
+RUN go install github.com/charmbracelet/crush@latest \
+    && mkdir -p /usr/local/bin \
     && mv /root/go/bin/crush /usr/local/bin \
-    && rm -rf /root/go
+    && rm -rf /root/go /root/.cache/

@@ -9,9 +9,6 @@ RUN apt-get update \
         aptitude \
         golang \
         nodejs \
-        qemu-system-x86 \
-        qemu-system-aarch64 \
-        qemu-guest-agent \
         vim \
         curl \
         ca-certificates \
@@ -33,7 +30,6 @@ RUN apt-get update \
         xdg-utils \
         xdotool \
         scrot \
-        openjdk-25-jdk-headless \
         unzip \
         pluma \
         nodejs \
@@ -71,7 +67,7 @@ FROM base AS computeruse-codex
 RUN npm install -g @openai/codex
 
 FROM base AS computeruse-crush
-RUN go install github.com/charmbracelet/crush@latest
-RUN mkdir -p /usr/local/bin \
+RUN go install github.com/charmbracelet/crush@latest \
+    && mkdir -p /usr/local/bin \
     && mv /config/go/bin/crush /usr/local/bin \
-    && rm -rf /config/go
+    && rm -rf /config/go /config/.cache/
