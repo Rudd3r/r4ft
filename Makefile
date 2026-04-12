@@ -63,7 +63,7 @@ publish-computeruse-crush:
 	TYPE=computeruse-crush $(MAKE) _publish
 
 _publish:
-	docker push $(TAGS)
+	for tag in $(TAGS); do docker push $$tag; done
 
 list:
 	docker images ghcr.io/rudd3r/r4ft --format 'ghcr.io/rudd3r/r4ft:{{.Tag}}'
