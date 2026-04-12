@@ -1,8 +1,9 @@
 # https://github.com/linuxserver/docker-webtop
-FROM lscr.io/linuxserver/webtop:ubuntu-xfce
+FROM ghcr.io/linuxserver/webtop:debian-xfce AS base
 
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y \
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         aptitude \
         golang \
         nodejs \
@@ -15,7 +16,6 @@ RUN apt-get update && apt-get install -y \
         gnupg \
         wget \
         apt-transport-https \
-        software-properties-common \
         python3 \
         python3-pip \
         python3-tk \
@@ -31,19 +31,45 @@ RUN apt-get update && apt-get install -y \
         xdg-utils \
         xdotool \
         scrot \
-        openjdk-17-jdk-headless \
+        openjdk-25-jdk-headless \
         unzip \
         pluma \
+        nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+ENV PUID=1000
+ENV PGID=1000
+ENV TITLE="Agent Computer Use"
+ENV SELKIES_MANUAL_WIDTH=1920
+ENV SELKIES_MANUAL_HEIGHT=1080
+ENV SELKIES_UI_SIDEBAR_SHOW_STATS=false
+ENV SELKIES_UI_SIDEBAR_SHOW_APPS=false
+ENV SELKIES_UI_SIDEBAR_SHOW_GAMEPADS=false
+ENV SELKIES_UI_SIDEBAR_SHOW_GAMING_MODE=false
+ENV SELKIES_UI_SIDEBAR_SHOW_TRACKPAD=false
+ENV SELKIES_AUDIO_ENABLED=false
+ENV SELKIES_MICROPHONE_ENABLED=false
+ENV SELKIES_GAMEPAD_ENABLED=false
+ENV MAX_RESOLUTION=1920x108
 
 ENV AGENT_BROWSER_HEADED=true
 RUN npm install -g agent-browser && agent-browser install \
     && DEBIAN_FRONTEND=noninteractive npx playwright install-deps \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN pip3 install --no-cache-dir matplotlib numpy pandas seaborn plotly
-RUN npm install -g @anthropic-ai/claude-code
 RUN curl -LsSf https://astral.sh/uv/install.sh | /bin/sh \
     && mv /config/.local/bin/uv* /usr/local/bin/
-RUN npm install -g @openai/codex
 COPY x11-computer-use-mcp /usr/local/bin/
+
+FROM base AS claude
+RUN npm install -g @anthropic-ai/claude-code
+
+FROM base AS codex
+RUN npm install -g @openai/codex
+
+FROM base AS crush
+RUN go install github.com/charmbracelet/crush@latest
+RUN mkdir -p /usr/local/bin \
+    && mv /config/go/bin/crush /usr/local/bin \
+    && rm -rf /config/go
