@@ -1,47 +1,73 @@
 SHELL := /bin/bash
 COMMIT := $(shell git rev-parse --short HEAD)
+
 ifeq ($(shell git status --porcelain 2>/dev/null),)
-    COMMIT_TAG := $(COMMIT)
+    BASE_TAGS := -t ghcr.io/rudd3r/r4ft:$(TYPE) -t ghcr.io/rudd3r/r4ft:$(TYPE)-$(COMMIT)
+    TAGS := ghcr.io/rudd3r/r4ft:$(TYPE) ghcr.io/rudd3r/r4ft:$(TYPE)-$(COMMIT)
 else
-    COMMIT_TAG := testing
+    BASE_TAGS := -t ghcr.io/rudd3r/r4ft:$(TYPE)-testing
+    TAGS := ghcr.io/rudd3r/r4ft:$(TYPE)-testing
 endif
-.PHONY: build agents claude codex crush computeruse computeruse-claude computeruse-codex computeruse-crush build publish publish-agents publish-computeruse clean
+
+.PHONY: build _build agents claude codex crush computeruse computeruse-claude computeruse-codex computeruse-crush build publish publish-agents publish-computeruse publish-computeruse-crush publish-computeruse-codex publish-computeruse-claude publish-codex publish-claude publish-codex clean
 
 build: agents computeruse
 
-agents: agents-claude agents-codex agents-crush
-agents-claude:
-	docker build -f ./agents/Dockerfile --target=claude -t ghcr.io/rudd3r/r4ft:claude -t ghcr.io/rudd3r/r4ft:claude-$(COMMIT_TAG) ./agents/
-agents-codex:
-	docker build -f ./agents/Dockerfile --target=codex -t ghcr.io/rudd3r/r4ft:codex -t ghcr.io/rudd3r/r4ft:codex-$(COMMIT_TAG) ./agents/
-agents-crush:
-	docker build -f ./agents/Dockerfile --target=crush -t ghcr.io/rudd3r/r4ft:crush -t ghcr.io/rudd3r/r4ft:crush-$(COMMIT_TAG) ./agents/
+agents: claude codex crush
+
+claude:
+	TYPE=claude BASE_PATH=agents $(MAKE) _build
+
+codex:
+	TYPE=codex BASE_PATH=agents $(MAKE) _build
+
+crush:
+	TYPE=crush BASE_PATH=agents $(MAKE) _build
 
 computeruse: computeruse-claude computeruse-codex computeruse-crush
-computeruse-claude:
-	docker build -f ./computeruse/Dockerfile --target=claude -t ghcr.io/rudd3r/r4ft:computeruse-claude -t ghcr.io/rudd3r/r4ft:computeruse-claude-$(COMMIT_TAG) ./computeruse/
-computeruse-codex:
-	docker build -f ./computeruse/Dockerfile --target=codex -t ghcr.io/rudd3r/r4ft:computeruse-codex -t ghcr.io/rudd3r/r4ft:computeruse-codex-$(COMMIT_TAG) ./computeruse/
-computeruse-crush:
-	docker build -f ./computeruse/Dockerfile --target=crush -t ghcr.io/rudd3r/r4ft:computeruse-crush -t ghcr.io/rudd3r/r4ft:computeruse-crush-$(COMMIT_TAG) ./computeruse/
 
-publish: build publish-agents publish-computeruse
-publish-agents: publish-agents-claude publish-agents-codex publish-agents-crush
-publish-agents-claude:
-	docker push ghcr.io/rudd3r/r4ft:claude && docker push ghcr.io/rudd3r/r4ft:claude-$(COMMIT_TAG)
-publish-agents-codex:
-	docker push ghcr.io/rudd3r/r4ft:codex && docker push ghcr.io/rudd3r/r4ft:codex-$(COMMIT_TAG)
-publish-agents-crush:
-	docker push ghcr.io/rudd3r/r4ft:crush && docker push ghcr.io/rudd3r/r4ft:crush-$(COMMIT_TAG)
+computeruse-claude:
+	TYPE=computeruse-claude BASE_PATH=computeruse $(MAKE) _build
+
+computeruse-codex:
+	TYPE=computeruse-codex BASE_PATH=computeruse $(MAKE) _build
+
+computeruse-crush:
+	TYPE=computeruse-crush BASE_PATH=computeruse $(MAKE) _build
+
+_build:
+	docker build -f ./$(BASE_PATH)/Dockerfile --target=$(TYPE) $(BASE_TAGS) ./$(BASE_PATH)/
+
+publish: publish-agents publish-computeruse
+
+publish-agents: publish-claude publish-codex publish-crush
+
+publish-claude:
+	TYPE=claude $(MAKE) _publish
+
+publish-codex:
+	TYPE=codex $(MAKE) _publish
+
+publish-crush:
+	TYPE=crush $(MAKE) _publish
+
 publish-computeruse: publish-computeruse-claude publish-computeruse-codex publish-computeruse-crush
+
 publish-computeruse-claude:
-	docker push ghcr.io/rudd3r/r4ft:computeruse-claude && docker push ghcr.io/rudd3r/r4ft:computeruse-claude-$(COMMIT_TAG)
+	TYPE=computeruse-claude $(MAKE) _publish
+
 publish-computeruse-codex:
-	docker push ghcr.io/rudd3r/r4ft:computeruse-codex && docker push ghcr.io/rudd3r/r4ft:computeruse-codex-$(COMMIT_TAG)
+	TYPE=computeruse-codex $(MAKE) _publish
+
 publish-computeruse-crush:
-	docker push ghcr.io/rudd3r/r4ft:computeruse-crush && docker push ghcr.io/rudd3r/r4ft:computeruse-crush-$(COMMIT_TAG)
+	TYPE=computeruse-crush $(MAKE) _publish
+
+_publish:
+	docker push $(TAGS)
+
+list:
+	docker images ghcr.io/rudd3r/r4ft --format 'ghcr.io/rudd3r/r4ft:{{.Tag}}'
 
 clean:
 	docker rmi $(shell docker images ghcr.io/rudd3r/r4ft --format 'ghcr.io/rudd3r/r4ft:{{.Tag}}')
-
-
+	docker builder prune --filter "label=com.r4ft.project=r4ft" --force

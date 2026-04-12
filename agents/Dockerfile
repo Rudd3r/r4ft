@@ -1,5 +1,7 @@
 FROM ghcr.io/linuxserver/baseimage-debian:trixie AS base
 
+LABEL "com.r4ft.project"="r4ft"
+
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
@@ -32,6 +34,8 @@ RUN apt-get update \
 
 RUN curl -LsSf https://astral.sh/uv/install.sh | /bin/sh \
     && mv /root/.local/bin/uv* /usr/local/bin/
+
+CMD ["/bin/bash"]
 
 FROM base AS claude
 RUN npm install -g @anthropic-ai/claude-code
