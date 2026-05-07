@@ -1,4 +1,4 @@
-    FROM debian:trixie-20260406 AS base
+FROM debian:trixie-20260406 AS base
 
 LABEL "com.r4ft.project"="r4ft"
 
