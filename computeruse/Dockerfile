@@ -59,6 +59,7 @@ RUN pip3 install --no-cache-dir matplotlib numpy pandas seaborn plotly
 RUN curl -LsSf https://astral.sh/uv/install.sh | /bin/sh \
     && mv /config/.local/bin/uv* /usr/local/bin/
 COPY x11-computer-use-mcp /usr/local/bin/
+RUN mkdir -p /etc/docker && echo '{"storage-driver":"vfs"}' > /etc/docker/daemon.json
 
 FROM base AS computeruse-claude
 RUN npm install -g @anthropic-ai/claude-code
