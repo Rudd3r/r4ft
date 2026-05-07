@@ -28,12 +28,15 @@ computeruse: computeruse-claude computeruse-codex computeruse-crush
 
 computeruse-claude:
 	TYPE=computeruse-claude BASE_PATH=computeruse $(MAKE) _build
+	TYPE=computeruse-claude-openvscode BASE_PATH=computeruse $(MAKE) _build
 
 computeruse-codex:
 	TYPE=computeruse-codex BASE_PATH=computeruse $(MAKE) _build
+	TYPE=computeruse-codex-openvscode BASE_PATH=computeruse $(MAKE) _build
 
 computeruse-crush:
 	TYPE=computeruse-crush BASE_PATH=computeruse $(MAKE) _build
+	TYPE=computeruse-crush-openvscode BASE_PATH=computeruse $(MAKE) _build
 
 _build:
 	docker build -f ./$(BASE_PATH)/Dockerfile --target=$(TYPE) $(BASE_TAGS) ./$(BASE_PATH)/
@@ -55,12 +58,15 @@ publish-computeruse: publish-computeruse-claude publish-computeruse-codex publis
 
 publish-computeruse-claude:
 	TYPE=computeruse-claude $(MAKE) _publish
+	TYPE=computeruse-claude-openvscode $(MAKE) _publish
 
 publish-computeruse-codex:
 	TYPE=computeruse-codex $(MAKE) _publish
+	TYPE=computeruse-codex-openvscode $(MAKE) _publish
 
 publish-computeruse-crush:
 	TYPE=computeruse-crush $(MAKE) _publish
+	TYPE=computeruse-crush-openvscode $(MAKE) _publish
 
 _publish:
 	for tag in $(TAGS); do docker push $$tag; done
