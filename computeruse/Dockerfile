@@ -93,8 +93,11 @@ RUN mkdir -p ${OPENVSCODE_SERVER_ROOT} /usr/local/bin && \
     tar -xzf ${RELEASE_TAG}-linux-${arch}.tar.gz && \
     mv -f ${RELEASE_TAG}-linux-${arch} ${OPENVSCODE_SERVER_ROOT} && \
     rm -f ${RELEASE_TAG}-linux-${arch}.tar.gz && \
-    echo "/bin/sh\nexec ${OPENVSCODE_SERVER_ROOT}/${RELEASE_TAG}-linux-${arch}/bin/openvscode-server --accept-server-license-terms --telemetry-level off --port 3535 --host 0.0.0.0 --without-connection-token \"${@}\"" > /usr/local/bin/openvscode-server && \
+    echo '#!/bin/sh\nexec '"${OPENVSCODE_SERVER_ROOT}/${RELEASE_TAG}-linux-${arch}"'/bin/openvscode-server --accept-server-license-terms --telemetry-level off --port 3535 --host 0.0.0.0 --connection-token ${OPENVSCODE_TOKEN} ${@}' > /usr/local/bin/openvscode-server && \
     chmod +x /usr/local/bin/openvscode-server
+
+COPY startwm.sh /defaults/startwm.sh
+RUN chmod +x /defaults/startwm.sh
 
 FROM base AS computeruse-claude
 RUN npm install -g @anthropic-ai/claude-code
@@ -119,3 +122,4 @@ RUN go install github.com/charmbracelet/crush@latest \
     && mkdir -p /usr/local/bin \
     && mv /config/go/bin/crush /usr/local/bin \
     && rm -rf /config/go /config/.cache/
+
