@@ -19,6 +19,8 @@ RUN  echo "deb http://deb.debian.org/debian trixie main contrib non-free non-fre
         tzdata \
         xz-utils \
         catatonit \
+        tmux \
+        screen \
         cron \
         curl \
         gnupg \

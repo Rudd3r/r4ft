@@ -9,6 +9,8 @@ RUN apt-get update \
         aptitude \
         golang \
         nodejs \
+        tmux \
+        screen \
         vim \
         curl \
         ca-certificates \
@@ -50,6 +52,7 @@ ENV SELKIES_AUDIO_ENABLED=false
 ENV SELKIES_MICROPHONE_ENABLED=false
 ENV SELKIES_GAMEPAD_ENABLED=false
 ENV MAX_RESOLUTION=1920x108
+ENV LSIO_FIRST_PARTY=false
 
 ENV AGENT_BROWSER_HEADED=true
 RUN npm install -g agent-browser && agent-browser install \
@@ -59,7 +62,9 @@ RUN pip3 install --no-cache-dir matplotlib numpy pandas seaborn plotly
 RUN curl -LsSf https://astral.sh/uv/install.sh | /bin/sh \
     && mv /config/.local/bin/uv* /usr/local/bin/
 COPY x11-computer-use-mcp /usr/local/bin/
-RUN mkdir -p /etc/docker && echo '{"storage-driver":"vfs"}' > /etc/docker/daemon.json
+RUN echo "R4FT" > /etc/s6-overlay/s6-rc.d/init-adduser/branding
+RUN mkdir -p /etc/docker \
+    && echo '{"storage-driver":"vfs"}' > /etc/docker/daemon.json
 
 FROM base AS base-openvscode
 
