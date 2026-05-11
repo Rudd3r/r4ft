@@ -13,10 +13,16 @@ endif
 
 build: agents computeruse
 
-agents: claude codex crush
+agents: claude codex crush pi openhands
 
 claude:
 	TYPE=claude BASE_PATH=agents $(MAKE) _build
+
+pi:
+	TYPE=pi BASE_PATH=agents $(MAKE) _build
+
+openhands:
+	TYPE=openhands BASE_PATH=agents $(MAKE) _build
 
 codex:
 	TYPE=codex BASE_PATH=agents $(MAKE) _build
@@ -24,11 +30,19 @@ codex:
 crush:
 	TYPE=crush BASE_PATH=agents $(MAKE) _build
 
-computeruse: computeruse-claude computeruse-codex computeruse-crush
+computeruse: computeruse-claude computeruse-openhands computeruse-pi computeruse-codex computeruse-crush
 
 computeruse-claude:
 	TYPE=computeruse-claude BASE_PATH=computeruse $(MAKE) _build
 	TYPE=computeruse-claude-openvscode BASE_PATH=computeruse $(MAKE) _build
+
+computeruse-pi:
+	TYPE=computeruse-pi BASE_PATH=computeruse $(MAKE) _build
+	TYPE=computeruse-pi-openvscode BASE_PATH=computeruse $(MAKE) _build
+
+computeruse-openhands:
+	TYPE=computeruse-openhands BASE_PATH=computeruse $(MAKE) _build
+	TYPE=computeruse-openhands-openvscode BASE_PATH=computeruse $(MAKE) _build
 
 computeruse-codex:
 	TYPE=computeruse-codex BASE_PATH=computeruse $(MAKE) _build
@@ -43,10 +57,16 @@ _build:
 
 publish: publish-agents publish-computeruse
 
-publish-agents: publish-claude publish-codex publish-crush
+publish-agents: publish-claude publish-openhands publish-pi publish-codex publish-crush
 
 publish-claude:
 	TYPE=claude $(MAKE) _publish
+
+publish-pi:
+	TYPE=pi $(MAKE) _publish
+
+publish-openhands:
+	TYPE=openhands $(MAKE) _publish
 
 publish-codex:
 	TYPE=codex $(MAKE) _publish
@@ -54,11 +74,19 @@ publish-codex:
 publish-crush:
 	TYPE=crush $(MAKE) _publish
 
-publish-computeruse: publish-computeruse-claude publish-computeruse-codex publish-computeruse-crush
+publish-computeruse: publish-computeruse-claude publish-openhands-claude publish-pi-claude publish-computeruse-codex publish-computeruse-crush
 
 publish-computeruse-claude:
 	TYPE=computeruse-claude $(MAKE) _publish
 	TYPE=computeruse-claude-openvscode $(MAKE) _publish
+
+publish-pi-claude:
+	TYPE=computeruse-pi $(MAKE) _publish
+	TYPE=computeruse-pi-openvscode $(MAKE) _publish
+
+publish-openhands-claude:
+	TYPE=computeruse-openhands $(MAKE) _publish
+	TYPE=computeruse-openhands-openvscode $(MAKE) _publish
 
 publish-computeruse-codex:
 	TYPE=computeruse-codex $(MAKE) _publish

@@ -58,13 +58,20 @@ ENV AGENT_BROWSER_HEADED=true
 RUN npm install -g agent-browser && agent-browser install \
     && DEBIAN_FRONTEND=noninteractive npx playwright install-deps \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-RUN pip3 install --no-cache-dir matplotlib numpy pandas seaborn plotly
 RUN curl -LsSf https://astral.sh/uv/install.sh | /bin/sh \
     && mv /config/.local/bin/uv* /usr/local/bin/
 COPY x11-computer-use-mcp /usr/local/bin/
 RUN echo "R4FT" > /etc/s6-overlay/s6-rc.d/init-adduser/branding
 RUN mkdir -p /etc/docker \
     && echo '{"storage-driver":"vfs"}' > /etc/docker/daemon.json
+RUN curl -fsSL "https://dl.google.com/android/cli/latest/linux_x86_64/android" -o /tmp/android \
+    && chmod +x /tmp/android \
+    && mv /tmp/android /usr/local/bin/android
+RUN go install golang.org/x/tools/gopls@latest \
+    && go install github.com/go-delve/delve/cmd/dlv@latest \
+    && mkdir -p /usr/local/bin \
+    && mv -v /config/go/bin/* /usr/local/bin \
+    && rm -rf /config/go /config/.cache/
 
 FROM base AS base-openvscode
 
@@ -102,6 +109,12 @@ RUN chmod +x /defaults/startwm.sh
 FROM base AS computeruse-claude
 RUN npm install -g @anthropic-ai/claude-code
 
+FROM base AS computeruse-pi
+RUN npm install -g @earendil-works/pi-coding-agent
+
+FROM base AS computeruse-openhands
+RUN uv tool install openhands --python 3.12
+
 FROM base AS computeruse-codex
 RUN npm install -g @openai/codex
 
@@ -113,6 +126,12 @@ RUN go install github.com/charmbracelet/crush@latest \
 
 FROM base-openvscode AS computeruse-claude-openvscode
 RUN npm install -g @anthropic-ai/claude-code
+
+FROM base-openvscode AS computeruse-pi-openvscode
+RUN npm install -g @earendil-works/pi-coding-agent
+
+FROM base-openvscode AS computeruse-openhands-openvscode
+RUN uv tool install openhands --python 3.12
 
 FROM base-openvscode AS computeruse-codex-openvscode
 RUN npm install -g @openai/codex

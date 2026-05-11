@@ -79,6 +79,12 @@ CMD []
 FROM base AS claude
 RUN npm install -g @anthropic-ai/claude-code
 
+FROM base AS pi
+RUN npm install -g @earendil-works/pi-coding-agent
+
+FROM base AS openhands
+RUN uv tool install openhands --python 3.12
+
 FROM base AS codex
 RUN npm install -g @openai/codex
 
