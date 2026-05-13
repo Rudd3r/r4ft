@@ -77,22 +77,22 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD []
 
 FROM base AS claude
-RUN npm install -g @anthropic-ai/claude-code@0.2.36
+RUN npm install -g @anthropic-ai/claude-code@2.1.68
 
 FROM base AS pi
-RUN npm install -g @earendil-works/pi-coding-agent@0.70.2
+RUN npm install -g @earendil-works/pi-coding-agent@0.74.0
 
 FROM base AS openhands
 RUN uv tool install openhands --python 3.12
 
 FROM base AS codex
-RUN npm install -g @openai/codex@0.1.2504172304
+RUN npm install -g @openai/codex@0.122.0
 
 FROM base AS crush
-RUN mkdir -p /usr/loca/share/ \
-    && curl -Ls https://github.com/charmbracelet/crush/releases/download/v0.60.0/crush_0.60.0_Linux_x86_64.tar.gz --output - \
-    | tar -C /usr/local/share/ -xzvf - \
-    && ln -s /usr/local/share/crush_0.60.0_Linux_x86_64/crush /usr/local/bin/crush
+RUN go install github.com/charmbracelet/crush@v0.67.0 \
+    && mkdir -p /usr/local/bin \
+    && mv /root/go/bin/crush /usr/local/bin \
+    && rm -rf /root/go /root/.cache/
 
 FROM base AS opencode
-RUN npm install -g opencode-ai@0.0.0-202506122101
+RUN npm install -g opencode-ai@1.3.8

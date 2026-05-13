@@ -107,44 +107,62 @@ COPY startwm.sh /defaults/startwm.sh
 RUN chmod +x /defaults/startwm.sh
 
 FROM base AS computeruse-claude
-RUN npm install -g @anthropic-ai/claude-code@0.2.36
+RUN npm install -g @anthropic-ai/claude-code@2.1.68
 
 FROM base AS computeruse-pi
-RUN npm install -g @earendil-works/pi-coding-agent@0.70.2
+RUN npm install -g @earendil-works/pi-coding-agent@0.74.0
 
 FROM base AS computeruse-openhands
-RUN uv tool install openhands --python 3.12
+RUN UV_TOOL_DIR=/usr/local/share/uv/tools \
+    UV_TOOL_BIN_DIR=/usr/local/bin \
+    UV_INSTALL_DIR=/usr/local/bin \
+    UV_PYTHON_BIN_DIR=/usr/local/bin \
+    UV_PYTHON_INSTALL_DIR=/usr/local/share/uv/python \
+    uv tool install openhands --python 3.12 \
+    && find /usr/local/share/uv -type d -exec chmod 755 {} \; \
+    && find /usr/local/share/uv -type f -executable -exec chmod 755 {} \; \
+    && find /usr/local/share/uv -type f ! -executable -exec chmod 644 {} \; \
+    && chmod 755 /usr/local/bin/*
 
 FROM base AS computeruse-codex
-RUN npm install -g @openai/codex@0.1.2504172304
+RUN npm install -g @openai/codex@0.122.0
 
 FROM base AS computeruse-crush
-RUN go install github.com/charmbracelet/crush@latest \
+RUN go install github.com/charmbracelet/crush@v0.67.0 \
     && mkdir -p /usr/local/bin \
     && mv /config/go/bin/crush /usr/local/bin \
     && rm -rf /config/go /config/.cache/
 
 FROM base AS computeruse-opencode
-RUN npm install -g opencode-ai@0.0.0-202506122101
+RUN npm install -g opencode-ai@1.3.8
 
 FROM base-openvscode AS computeruse-claude-openvscode
-RUN npm install -g @anthropic-ai/claude-code@0.2.36
+RUN npm install -g @anthropic-ai/claude-code@2.1.68
 
 FROM base-openvscode AS computeruse-pi-openvscode
-RUN npm install -g @earendil-works/pi-coding-agent@0.70.2
+RUN npm install -g @earendil-works/pi-coding-agent@0.74.0
 
 FROM base-openvscode AS computeruse-openhands-openvscode
-RUN uv tool install openhands --python 3.12
+RUN UV_TOOL_DIR=/usr/local/share/uv/tools \
+    UV_TOOL_BIN_DIR=/usr/local/bin \
+    UV_INSTALL_DIR=/usr/local/bin \
+    UV_PYTHON_BIN_DIR=/usr/local/bin \
+    UV_PYTHON_INSTALL_DIR=/usr/local/share/uv/python \
+    uv tool install openhands --python 3.12 \
+    && find /usr/local/share/uv -type d -exec chmod 755 {} \; \
+    && find /usr/local/share/uv -type f -executable -exec chmod 755 {} \; \
+    && find /usr/local/share/uv -type f ! -executable -exec chmod 644 {} \; \
+    && chmod 755 /usr/local/bin/*
 
 FROM base-openvscode AS computeruse-codex-openvscode
-RUN npm install -g @openai/codex@0.1.2504172304
+RUN npm install -g @openai/codex@0.122.0
 
 FROM base-openvscode AS computeruse-crush-openvscode
-RUN go install github.com/charmbracelet/crush@latest \
+RUN go install github.com/charmbracelet/crush@v0.67.0 \
     && mkdir -p /usr/local/bin \
     && mv /config/go/bin/crush /usr/local/bin \
     && rm -rf /config/go /config/.cache/
 
 FROM base-openvscode AS computeruse-opencode-openvscode
-RUN npm install -g opencode-ai@0.0.0-202506122101
+RUN npm install -g opencode-ai@1.3.8
 
