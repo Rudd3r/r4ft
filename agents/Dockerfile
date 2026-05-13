@@ -77,16 +77,16 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD []
 
 FROM base AS claude
-RUN npm install -g @anthropic-ai/claude-code
+RUN npm install -g @anthropic-ai/claude-code@0.2.36
 
 FROM base AS pi
-RUN npm install -g @earendil-works/pi-coding-agent
+RUN npm install -g @earendil-works/pi-coding-agent@0.70.2
 
 FROM base AS openhands
 RUN uv tool install openhands --python 3.12
 
 FROM base AS codex
-RUN npm install -g @openai/codex
+RUN npm install -g @openai/codex@0.1.2504172304
 
 FROM base AS crush
 RUN mkdir -p /usr/loca/share/ \
@@ -95,4 +95,4 @@ RUN mkdir -p /usr/loca/share/ \
     && ln -s /usr/local/share/crush_0.60.0_Linux_x86_64/crush /usr/local/bin/crush
 
 FROM base AS opencode
-RUN npm install -g opencode-ai
+RUN npm install -g opencode-ai@0.0.0-202506122101

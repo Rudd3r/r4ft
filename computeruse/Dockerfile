@@ -55,7 +55,7 @@ ENV MAX_RESOLUTION=1920x108
 ENV LSIO_FIRST_PARTY=false
 
 ENV AGENT_BROWSER_HEADED=true
-RUN npm install -g agent-browser && agent-browser install \
+RUN npm install -g agent-browser@0.4.4 && agent-browser install \
     && DEBIAN_FRONTEND=noninteractive npx playwright install-deps \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN curl -LsSf https://astral.sh/uv/install.sh | /bin/sh \
@@ -107,16 +107,16 @@ COPY startwm.sh /defaults/startwm.sh
 RUN chmod +x /defaults/startwm.sh
 
 FROM base AS computeruse-claude
-RUN npm install -g @anthropic-ai/claude-code
+RUN npm install -g @anthropic-ai/claude-code@0.2.36
 
 FROM base AS computeruse-pi
-RUN npm install -g @earendil-works/pi-coding-agent
+RUN npm install -g @earendil-works/pi-coding-agent@0.70.2
 
 FROM base AS computeruse-openhands
 RUN uv tool install openhands --python 3.12
 
 FROM base AS computeruse-codex
-RUN npm install -g @openai/codex
+RUN npm install -g @openai/codex@0.1.2504172304
 
 FROM base AS computeruse-crush
 RUN go install github.com/charmbracelet/crush@latest \
@@ -125,19 +125,19 @@ RUN go install github.com/charmbracelet/crush@latest \
     && rm -rf /config/go /config/.cache/
 
 FROM base AS computeruse-opencode
-RUN npm install -g opencode-ai
+RUN npm install -g opencode-ai@0.0.0-202506122101
 
 FROM base-openvscode AS computeruse-claude-openvscode
-RUN npm install -g @anthropic-ai/claude-code
+RUN npm install -g @anthropic-ai/claude-code@0.2.36
 
 FROM base-openvscode AS computeruse-pi-openvscode
-RUN npm install -g @earendil-works/pi-coding-agent
+RUN npm install -g @earendil-works/pi-coding-agent@0.70.2
 
 FROM base-openvscode AS computeruse-openhands-openvscode
 RUN uv tool install openhands --python 3.12
 
 FROM base-openvscode AS computeruse-codex-openvscode
-RUN npm install -g @openai/codex
+RUN npm install -g @openai/codex@0.1.2504172304
 
 FROM base-openvscode AS computeruse-crush-openvscode
 RUN go install github.com/charmbracelet/crush@latest \
@@ -146,5 +146,5 @@ RUN go install github.com/charmbracelet/crush@latest \
     && rm -rf /config/go /config/.cache/
 
 FROM base-openvscode AS computeruse-opencode-openvscode
-RUN npm install -g opencode-ai
+RUN npm install -g opencode-ai@0.0.0-202506122101
 
