@@ -93,3 +93,6 @@ RUN mkdir -p /usr/loca/share/ \
     && curl -Ls https://github.com/charmbracelet/crush/releases/download/v0.60.0/crush_0.60.0_Linux_x86_64.tar.gz --output - \
     | tar -C /usr/local/share/ -xzvf - \
     && ln -s /usr/local/share/crush_0.60.0_Linux_x86_64/crush /usr/local/bin/crush
+
+FROM base AS opencode
+RUN npm install -g opencode-ai

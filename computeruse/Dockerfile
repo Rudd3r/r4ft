@@ -124,6 +124,9 @@ RUN go install github.com/charmbracelet/crush@latest \
     && mv /config/go/bin/crush /usr/local/bin \
     && rm -rf /config/go /config/.cache/
 
+FROM base AS computeruse-opencode
+RUN npm install -g opencode-ai
+
 FROM base-openvscode AS computeruse-claude-openvscode
 RUN npm install -g @anthropic-ai/claude-code
 
@@ -141,4 +144,7 @@ RUN go install github.com/charmbracelet/crush@latest \
     && mkdir -p /usr/local/bin \
     && mv /config/go/bin/crush /usr/local/bin \
     && rm -rf /config/go /config/.cache/
+
+FROM base-openvscode AS computeruse-opencode-openvscode
+RUN npm install -g opencode-ai
 

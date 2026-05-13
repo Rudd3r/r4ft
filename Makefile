@@ -13,7 +13,7 @@ endif
 
 build: agents computeruse
 
-agents: claude codex crush pi openhands
+agents: claude codex crush pi openhands opencode
 
 claude:
 	TYPE=claude BASE_PATH=agents $(MAKE) _build
@@ -30,7 +30,10 @@ codex:
 crush:
 	TYPE=crush BASE_PATH=agents $(MAKE) _build
 
-computeruse: computeruse-claude computeruse-openhands computeruse-pi computeruse-codex computeruse-crush
+opencode:
+	TYPE=opencode BASE_PATH=agents $(MAKE) _build
+
+computeruse: computeruse-claude computeruse-openhands computeruse-pi computeruse-codex computeruse-crush computeruse-opencode
 
 computeruse-claude:
 	TYPE=computeruse-claude BASE_PATH=computeruse $(MAKE) _build
@@ -52,12 +55,16 @@ computeruse-crush:
 	TYPE=computeruse-crush BASE_PATH=computeruse $(MAKE) _build
 	TYPE=computeruse-crush-openvscode BASE_PATH=computeruse $(MAKE) _build
 
+computeruse-opencode:
+	TYPE=computeruse-opencode BASE_PATH=computeruse $(MAKE) _build
+	TYPE=computeruse-opencode-openvscode BASE_PATH=computeruse $(MAKE) _build
+
 _build:
 	docker build -f ./$(BASE_PATH)/Dockerfile --target=$(TYPE) $(BASE_TAGS) ./$(BASE_PATH)/
 
 publish: publish-agents publish-computeruse
 
-publish-agents: publish-claude publish-openhands publish-pi publish-codex publish-crush
+publish-agents: publish-claude publish-openhands publish-pi publish-codex publish-crush publish-opencode
 
 publish-claude:
 	TYPE=claude $(MAKE) _publish
@@ -74,7 +81,10 @@ publish-codex:
 publish-crush:
 	TYPE=crush $(MAKE) _publish
 
-publish-computeruse: publish-computeruse-claude publish-openhands-claude publish-pi-claude publish-computeruse-codex publish-computeruse-crush
+publish-opencode:
+	TYPE=opencode $(MAKE) _publish
+
+publish-computeruse: publish-computeruse-claude publish-openhands-claude publish-pi-claude publish-computeruse-codex publish-computeruse-crush publish-computeruse-opencode
 
 publish-computeruse-claude:
 	TYPE=computeruse-claude $(MAKE) _publish
@@ -95,6 +105,10 @@ publish-computeruse-codex:
 publish-computeruse-crush:
 	TYPE=computeruse-crush $(MAKE) _publish
 	TYPE=computeruse-crush-openvscode $(MAKE) _publish
+
+publish-computeruse-opencode:
+	TYPE=computeruse-opencode $(MAKE) _publish
+	TYPE=computeruse-opencode-openvscode $(MAKE) _publish
 
 _publish:
 	for tag in $(TAGS); do docker push $$tag; done
