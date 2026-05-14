@@ -35,6 +35,7 @@ RUN apt-get update \
         unzip \
         pluma \
         nodejs \
+        ncurses-bin \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -55,9 +56,14 @@ ENV MAX_RESOLUTION=1920x108
 ENV LSIO_FIRST_PARTY=false
 
 ENV AGENT_BROWSER_HEADED=true
-RUN npm install -g agent-browser@0.4.4 && agent-browser install \
-    && DEBIAN_FRONTEND=noninteractive npx playwright install-deps \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Set shared browser path accessible to all users
+ENV PLAYWRIGHT_BROWSERS_PATH=/usr/share/ms-playwright
+RUN mkdir -p /usr/share/ms-playwright
+RUN npm install -g agent-browser@0.4.4 \
+    && PLAYWRIGHT_BROWSERS_PATH=/usr/share/ms-playwright agent-browser install --with-deps \
+    && DEBIAN_FRONTEND=noninteractive PLAYWRIGHT_BROWSERS_PATH=/usr/share/ms-playwright npx playwright install-deps \
+    && apt-get clean && rm -rf /var/lib/apt/lists/* \
+    && chmod -R 777 /usr/share/ms-playwright
 RUN curl -LsSf https://astral.sh/uv/install.sh | /bin/sh \
     && mv /config/.local/bin/uv* /usr/local/bin/
 COPY x11-computer-use-mcp /usr/local/bin/

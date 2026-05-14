@@ -50,6 +50,7 @@ RUN  echo "deb http://deb.debian.org/debian trixie main contrib non-free non-fre
         npm \
         sudo \
         aptitude \
+        ncurses-bin \
     && locale-gen en_US.UTF-8 \
     && apt-get -y autoremove \
     && apt-get clean \
