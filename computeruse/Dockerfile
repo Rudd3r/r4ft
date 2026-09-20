@@ -1,10 +1,9 @@
 # https://github.com/linuxserver/docker-webtop
-FROM ghcr.io/linuxserver/webtop:debian-xfce AS base
+FROM ghcr.io/linuxserver/webtop:debian-xfce-version-7234e352 AS base
 
 LABEL "com.r4ft.project"="r4ft"
 
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y \
         aptitude \
         golang \
@@ -55,15 +54,6 @@ ENV SELKIES_GAMEPAD_ENABLED=false
 ENV MAX_RESOLUTION=1920x108
 ENV LSIO_FIRST_PARTY=false
 
-ENV AGENT_BROWSER_HEADED=true
-# Set shared browser path accessible to all users
-ENV PLAYWRIGHT_BROWSERS_PATH=/usr/share/ms-playwright
-RUN mkdir -p /usr/share/ms-playwright
-RUN npm install -g agent-browser@0.4.4 \
-    && PLAYWRIGHT_BROWSERS_PATH=/usr/share/ms-playwright agent-browser install --with-deps \
-    && DEBIAN_FRONTEND=noninteractive PLAYWRIGHT_BROWSERS_PATH=/usr/share/ms-playwright npx playwright install-deps \
-    && apt-get clean && rm -rf /var/lib/apt/lists/* \
-    && chmod -R 777 /usr/share/ms-playwright
 RUN curl -LsSf https://astral.sh/uv/install.sh | /bin/sh \
     && mv /config/.local/bin/uv* /usr/local/bin/
 COPY x11-computer-use-mcp /usr/local/bin/
@@ -139,6 +129,12 @@ RUN go install github.com/charmbracelet/crush@v0.67.0 \
     && mv /config/go/bin/crush /usr/local/bin \
     && rm -rf /config/go /config/.cache/
 
+FROM base AS computeruse-ajent
+RUN go install github.com/jentfoo/ajent@v0.0.6 \
+    && mkdir -p /usr/local/bin \
+    && mv /config/go/bin/ajent /usr/local/bin \
+    && rm -rf /config/go /config/.cache/s
+
 FROM base AS computeruse-opencode
 RUN npm install -g opencode-ai@1.3.8
 
@@ -167,6 +163,12 @@ FROM base-openvscode AS computeruse-crush-openvscode
 RUN go install github.com/charmbracelet/crush@v0.67.0 \
     && mkdir -p /usr/local/bin \
     && mv /config/go/bin/crush /usr/local/bin \
+    && rm -rf /config/go /config/.cache/
+
+FROM base-openvscode AS computeruse-ajent-openvscode
+RUN go install github.com/jentfoo/ajent@v0.0.6  \
+    && mkdir -p /usr/local/bin \
+    && mv /config/go/bin/ajent /usr/local/bin \
     && rm -rf /config/go /config/.cache/
 
 FROM base-openvscode AS computeruse-opencode-openvscode

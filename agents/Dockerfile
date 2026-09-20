@@ -95,5 +95,11 @@ RUN go install github.com/charmbracelet/crush@v0.67.0 \
     && mv /root/go/bin/crush /usr/local/bin \
     && rm -rf /root/go /root/.cache/
 
+FROM base AS ajent
+RUN go install github.com/jentfoo/ajent@v0.0.6  \
+    && mkdir -p /usr/local/bin \
+    && mv /root/go/bin/ajent /usr/local/bin \
+    && rm -rf /root/go /root/.cache/
+
 FROM base AS opencode
 RUN npm install -g opencode-ai@1.3.8

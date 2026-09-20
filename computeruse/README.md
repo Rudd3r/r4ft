@@ -7,7 +7,7 @@ Pre-built Docker images for AI agents with full desktop environment and computer
 These images provide a complete desktop environment (XFCE on LinuxServer's webtop base) with:
 - 1920x1080 X11 display accessible via web browser
 - X11-computer-use-mcp server for screenshot and input control
-- Pre-installed AI coding agents (Claude, Codex, Pi, OpenHands, Crush, Opencode)
+- Pre-installed AI coding agents (Claude, Codex, Pi, OpenHands, Crush, Ajent, Opencode)
 - OpenVSCode Server for web-based VS Code access
 - Development tools: Go, Node.js, Python, tmux, vim, and more
 
@@ -20,6 +20,7 @@ These images provide a complete desktop environment (XFCE on LinuxServer's webto
 | `computeruse-openhands` | OpenHands | OpenHands agent with desktop environment |
 | `computeruse-codex` | OpenAI Codex | CLI agent with desktop environment |
 | `computeruse-crush` | Charmbracelet Crush | CLI agent with desktop environment |
+| `computeruse-ajent` | Ajent | CLI agent with desktop environment |
 | `computeruse-opencode` | Opencode AI | CLI agent with desktop environment |
 | `computeruse-*-openvscode` | Any agent + VS Code | All above variants with OpenVSCode Server |
 

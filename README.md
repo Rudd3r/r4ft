@@ -8,12 +8,18 @@ Pre-built Docker images for AI coding agents. Built for r0mp 🦦
 - `ghcr.io/rudd3r/r4ft:claude` — Anthropic Claude Code
 - `ghcr.io/rudd3r/r4ft:codex` — OpenAI Codex
 - `ghcr.io/rudd3r/r4ft:crush` — Charmbracelet Crush
+- `ghcr.io/rudd3r/r4ft:pi` — Earendil Pi coding agent
+- `ghcr.io/rudd3r/r4ft:openhands` — OpenHands
+- `ghcr.io/rudd3r/r4ft:ajent` — Ajent
 - `ghcr.io/rudd3r/r4ft:opencode` — Opencode AI
 
 ### Computer Use Images (GUI Desktop)
 - `ghcr.io/rudd3r/r4ft:computeruse-claude` — Claude with full desktop environment
 - `ghcr.io/rudd3r/r4ft:computeruse-codex` — Codex with full desktop environment
 - `ghcr.io/rudd3r/r4ft:computeruse-crush` — Crush with full desktop environment
+- `ghcr.io/rudd3r/r4ft:computeruse-pi` — Pi with full desktop environment
+- `ghcr.io/rudd3r/r4ft:computeruse-openhands` — OpenHands with full desktop environment
+- `ghcr.io/rudd3r/r4ft:computeruse-ajent` — Ajent with full desktop environment
 - `ghcr.io/rudd3r/r4ft:computeruse-opencode` — Opencode with full desktop environment
 
 The computer use variants include a 1920x1080 XFCE desktop, X11 display server, and MCP server for screenshot/input control.
